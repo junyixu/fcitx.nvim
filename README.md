@@ -17,6 +17,41 @@ yay -S lua51-ldbus
 
 ldbus links straight against the system DBus headers, keeping this plugin entirely in Lua with no Python or shell helpers.
 
+### NixOS
+
+On NixOS, you can wrap Neovim with a Lua 5.1/LuaJIT environment that includes `ldbus`:
+
+```nix
+programs = {
+  neovim = {
+    enable = true;
+    package = (
+      pkgs.symlinkJoin {
+        inherit (pkgs.neovim-unwrapped) meta lua;
+        name = "neovim-with-lua";
+        paths = [ pkgs.neovim-unwrapped ];
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        version = lib.getVersion pkgs.neovim-unwrapped;
+        postBuild =
+          let
+            luaEnv = pkgs.luajit.withPackages (
+              ps: with ps; [
+                ldbus
+              ]
+            );
+          in
+          ''
+            rm $out/bin/nvim
+            makeWrapper ${pkgs.neovim-unwrapped}/bin/nvim $out/bin/nvim \
+              --set LUA_PATH '${luaEnv}/share/lua/5.1/?.lua;${luaEnv}/share/lua/5.1/?/init.lua;;' \
+              --set LUA_CPATH '${luaEnv}/lib/lua/5.1/?.so;;'
+          '';
+      }
+    );
+  };
+};
+```
+
 ## Installation
 
 ### lazy.nvim
