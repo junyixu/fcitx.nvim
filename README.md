@@ -7,7 +7,7 @@ fcitx.nvim keeps Neovim and fcitx5 in sync through direct DBus calls. Talking to
 - A working fcitx5 session on the same user bus.
 - ldbus (Lua DBus binding).
 
-### Arch Linux
+<details><summary>Arch Linux dependency installation</summary>
 
 Install the Lua 5.1 binding packaged by Arch first:
 
@@ -17,7 +17,9 @@ yay -S lua51-ldbus
 
 ldbus links straight against the system DBus headers, keeping this plugin entirely in Lua with no Python or shell helpers.
 
-### NixOS
+</details>
+
+<details><summary>NixOS dependency installation</summary>
 
 On NixOS, you can wrap Neovim with a Lua 5.1/LuaJIT environment that includes `ldbus`:
 
@@ -51,6 +53,8 @@ programs = {
   };
 };
 ```
+
+</details>
 
 ## Installation
 
